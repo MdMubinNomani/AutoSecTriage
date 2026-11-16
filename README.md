@@ -117,4 +117,3 @@ parser needs. `pySigma-backend-sqlite` must be `0.2.0`. `regex` and `dateparser`
 ## License
 
 MIT. See [LICENSE](LICENSE).
-# AutoSecTriage
