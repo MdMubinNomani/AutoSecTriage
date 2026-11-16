@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ti2dac"
+version = "0.1.1"
+description = "Threat Intelligence to Detection-as-Code: TI report -> Sigma -> multi-SIEM queries + safe simulation guides"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Sazidul0" }]
+keywords = ["threat-intelligence", "sigma", "detection-as-code", "mitre-attack", "siem", "splunk", "elastic", "microsoft-sentinel", "wazuh", "blue-team", "detection-engineering", "llm", "security"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Environment :: Web Environment",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.14",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "anthropic>=2.3",
+    "pydantic>=2.7",
+    "pysigma>=0.11,<0.12",
+    "pyparsing>=3.1,<3.2",          # pySigma 0.11 condition parser breaks on pyparsing 3.2+
+    # Exact pins: the sigma backends are tested together at these versions.
+    # Unpinned, pip backtracks through dozens of releases during install.
+    "sigma-cli==1.0.6",
+    "pySigma-backend-splunk==1.1.3",
+    "pySigma-backend-elasticsearch==1.1.6",
+    "pySigma-backend-kusto==0.4.5",
+    "pySigma-backend-crowdstrike==2.0.1",
+    "pySigma-backend-qradar-aql==0.3.2",
+    "pySigma-backend-opensearch==1.0.4",
+    "pySigma-backend-loki==0.12.4",
+    "pySigma-pipeline-sysmon==1.0.4",
+    "pySigma-pipeline-windows==1.2.0",
+    "pySigma-backend-sqlite==0.2.0",  # local rule evaluation (self-tests, replay); later versions need pySigma 2
+    # pySigma-backend-qradar-aql needs regex<2024; dateparser>=1.4 (pulled in via trafilatura) needs regex>=2024.
+    # These two pins are the combination the project is tested with.
+    "regex==2023.12.25",
+    "dateparser==1.2.1",
+    "trafilatura>=1.8",
+    "beautifulsoup4",
+    "lxml",
+    "pypdf>=4",
+    "python-docx>=1.1",               # incident reports in Word format
+    "pyyaml>=6",
+    "httpx>=0.27",
+    "typer>=0.12",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "jinja2>=3.1",
+    "markdown-it-py>=3",
+    "python-multipart",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+gemini = ["google-genai>=1.30"]
+evtx = ["python-evtx>=0.7", "defusedxml>=0.7"]
+
+[project.urls]
+Homepage = "https://github.com/Sazidul0/TI2DaC"
+Repository = "https://github.com/Sazidul0/TI2DaC"
+Issues = "https://github.com/Sazidul0/TI2DaC/issues"
+
+[project.scripts]
+ti2dac = "ti2dac.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ti2dac = ["data/*.json", "data/*.yaml", "data/*.yml", "web/templates/*.html", "web/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::SyntaxWarning", "ignore::DeprecationWarning"]
